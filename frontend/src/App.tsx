@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
-import Keycloak, { KeycloakConfig } from 'keycloak-js';
+import Keycloak, { KeycloakConfig, KeycloakInitOptions  } from 'keycloak-js';
 import ReportPage from './components/ReportPage';
 
 const keycloakConfig: KeycloakConfig = {
@@ -9,11 +9,22 @@ const keycloakConfig: KeycloakConfig = {
   clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID||""
 };
 
+// Дополнительные опции инициализации с PKCE
+const initOptions: KeycloakInitOptions = {
+  onLoad: 'login-required',  // или 'check-sso'
+  flow: 'standard',          // Включает Authorization Code Flow
+  pkceMethod: 'S256',       // Активирует PKCE с методом S256
+  enableLogging: true,      // Для отладки
+  audience: "reports-api"
+};
+
 const keycloak = new Keycloak(keycloakConfig);
 
 const App: React.FC = () => {
   return (
-    <ReactKeycloakProvider authClient={keycloak}>
+    <ReactKeycloakProvider 
+      authClient={keycloak}
+      initOptions={initOptions}>
       <div className="App">
         <ReportPage />
       </div>

@@ -11,6 +11,8 @@ services:
       - ./postgres-keycloak-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+    networks:
+      default:
   keycloak:
     image: quay.io/keycloak/keycloak:21.1
     environment:
@@ -29,6 +31,8 @@ services:
       - "8080:8080"
     depends_on:
       - keycloak_db
+    networks:
+      default:
   frontend:
     build:
       context: ./frontend
@@ -40,3 +44,24 @@ services:
       REACT_APP_KEYCLOAK_URL: http://localhost:8080
       REACT_APP_KEYCLOAK_REALM: reports-realm
       REACT_APP_KEYCLOAK_CLIENT_ID: reports-frontend
+    networks:
+      default:
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    depends_on:
+      - keycloak        
+    ports:
+      - "8000:8080"
+    environment:
+      APP_UID: 1692
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_RUNNING_IN_CONTAINER: true
+      Identity__Authority: http://keycloak:8080/realms/reports-realm
+      Identity__ClientId: reports-api
+      Identity__ClientSecret: oNwoLQdvJAvRcL89SydqCWCe5ry1jMgq
+    networks:
+      default:
+
+  
