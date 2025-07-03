@@ -14,7 +14,8 @@ const initOptions: KeycloakInitOptions = {
   onLoad: 'login-required',  // или 'check-sso'
   flow: 'standard',          // Включает Authorization Code Flow
   pkceMethod: 'S256',       // Активирует PKCE с методом S256
-  enableLogging: true        // Для отладки
+  enableLogging: true,      // Для отладки
+  audience: "reports-api"
 };
 
 const keycloak = new Keycloak(keycloakConfig);
